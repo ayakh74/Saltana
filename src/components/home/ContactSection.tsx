@@ -72,7 +72,7 @@ export default function ContactSection() {
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-cream/90 mb-4">
               {t('contact_title')}
             </h2>
-            <p className="text-cream/40 text-sm max-w-md mx-auto">
+            <p className="text-cream/40 text-sm max-w-md mx-auto" lang="ar">
               للحجز أو الاستفسار، تواصل معنا عبر الهاتف أو واتساب
             </p>
           </div>
@@ -120,7 +120,7 @@ export default function ContactSection() {
               href="/reservations"
               className="btn-gold px-8 py-4 text-sm font-bold tracking-[0.2em] rounded-sm uppercase text-center"
             >
-              احجز طاولة
+              <span lang="ar">احجز طاولة</span>
             </Link>
             <a
               href={whatsappLink}

@@ -174,10 +174,10 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="mt-16 pt-8 border-t border-gold/8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-cream/25 text-xs">
-            &copy; {new Date().getFullYear()} سلطنة | Saltana. {t('rights')}.
+            &copy; {new Date().getFullYear()} <span lang="ar">سلطنة</span> | Saltana. {t('rights')}.
           </p>
           <p className="text-cream/25 text-xs">
-            {t('designed_by')} — Diya
+            {t('designed_by')} — Aya Kh
           </p>
         </div>
       </div>

@@ -19,7 +19,7 @@ function TagBadge({ tag }: { tag: MenuItem['tag'] }) {
   return (
     <span className={cn('inline-flex items-center gap-1 text-[9px] font-bold tracking-widest uppercase border px-1.5 py-0.5 rounded-sm', color)}>
       <Icon size={8} />
-      {label}
+      <span lang="ar">{label}</span>
     </span>
   );
 }
@@ -32,6 +32,8 @@ function MenuItemCard({ item }: { item: MenuItem }) {
 
   const name = locale === 'he' ? (item.name_he || item.name_ar) : locale === 'en' ? (item.name_en || item.name_ar) : item.name_ar;
   const desc = locale === 'he' ? (item.desc_he || item.desc_ar) : locale === 'en' ? (item.desc_en || item.desc_ar) : item.desc_ar;
+  const nameIsArabic = locale === 'ar' || (locale === 'he' && !item.name_he) || (locale === 'en' && !item.name_en);
+  const descIsArabic = locale === 'ar' || (locale === 'he' && !item.desc_he) || (locale === 'en' && !item.desc_en);
 
   return (
     <div
@@ -70,16 +72,71 @@ function MenuItemCard({ item }: { item: MenuItem }) {
             <span className="text-gold-DEFAULT/60 text-xs">₪</span>
           </div>
           <div className="text-right flex-1 min-w-0">
-            <h3 className="text-cream/90 font-semibold text-base leading-snug">{name}</h3>
+            <h3 className="text-cream/90 font-semibold text-base leading-snug">{nameIsArabic ? <span lang="ar">{name}</span> : name}</h3>
             {locale === 'ar' && item.name_he && (
               <p className="text-cream/25 text-xs mt-0.5 font-heebo" dir="rtl">{item.name_he}</p>
             )}
           </div>
         </div>
         {desc && (
-          <p className="text-cream/40 text-xs leading-relaxed text-right mt-2 line-clamp-2">{desc}</p>
+          <p className="text-cream/40 text-xs leading-relaxed text-right mt-2 line-clamp-2">{descIsArabic ? <span lang="ar">{desc}</span> : desc}</p>
         )}
       </div>
+    </div>
+  );
+}
+
+function SectionedGrid({ items, cols = 2 }: { items: MenuItem[]; cols?: 2 | 3 }) {
+  const locale = useLocale();
+  const sorted = [...items].sort((a, b) => a.sort_order - b.sort_order);
+
+  // Group consecutive items by section label
+  const groups: { label: string | null; items: MenuItem[] }[] = [];
+  for (const item of sorted) {
+    const label = item.section ?? null;
+    const last = groups[groups.length - 1];
+    if (last && last.label === label) {
+      last.items.push(item);
+    } else {
+      groups.push({ label, items: [item] });
+    }
+  }
+
+  const sectionLabel = (label: string) => {
+    if (label === 'بارد') return { ar: 'مشروبات باردة', he: 'שתייה קרה', en: 'Cold Drinks' };
+    if (label === 'ساخن') return { ar: 'مشروبات ساخنة', he: 'שתייה חמה', en: 'Hot Drinks' };
+    return { ar: label, he: label, en: label };
+  };
+
+  const getLabel = (label: string) => {
+    const s = sectionLabel(label);
+    return locale === 'he' ? s.he : locale === 'en' ? s.en : s.ar;
+  };
+  const labelIsArabic = (label: string) => /[\u0600-\u06FF]/.test(getLabel(label));
+
+  return (
+    <div className="space-y-10">
+      {groups.map((group, idx) => (
+        <div key={idx}>
+          {group.label && (
+            <div className="flex items-center justify-center sm:justify-between gap-4 mb-6">
+              <div className="h-px flex-1 bg-gradient-to-r from-gold/15 to-transparent hidden sm:block" />
+              <span className="text-xs font-semibold tracking-[0.2em] uppercase text-gold-DEFAULT/60 px-3 py-1 border border-gold/15 rounded-sm text-center" {...(labelIsArabic(group.label) && { lang: 'ar' })}>
+                {getLabel(group.label)}
+              </span>
+              <div className="h-px flex-1 bg-gradient-to-l from-gold/15 to-transparent hidden sm:block" />
+            </div>
+          )}
+          <div className={cn(
+            'grid gap-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4',
+            cols === 3 ? 'grid-cols-3' : 'grid-cols-2'
+          )}>
+            {group.items.map((item) => (
+              <MenuItemCard key={item.id} item={item} />
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -126,7 +183,9 @@ export default function MenuPage({ categories }: Props) {
     setActiveCategory(catId);
     const el = sectionRefs.current[catId];
     if (el) {
-      const top = el.getBoundingClientRect().top + window.scrollY - 100;
+      // Offset for fixed header (~68px) + sticky category nav (~60px + ~50px) so title isn't hidden
+      const offset = 140;
+      const top = el.getBoundingClientRect().top + window.scrollY - offset;
       window.scrollTo({ top, behavior: 'smooth' });
     }
   };
@@ -146,18 +205,17 @@ export default function MenuPage({ categories }: Props) {
 
   return (
     <div className="min-h-screen bg-obsidian pt-24">
-      {/* Page Header */}
-      <div className="relative py-16 sm:py-20 text-center overflow-hidden">
+      {/* Page Header — section label only (no duplicate title), centered on mobile */}
+      <div className="relative py-16 sm:py-20 overflow-hidden">
         <div className="absolute inset-0 pointer-events-none"
           style={{ background: 'radial-gradient(ellipse at center top, rgba(201,165,106,0.06) 0%, transparent 60%)' }} />
-        <div className="relative z-10 max-w-7xl mx-auto px-4">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 text-center">
           <div className="flex items-center justify-center gap-4 mb-4">
             <div className="h-px w-12 bg-gold-DEFAULT/30" />
             <span className="section-label">{t('title')}</span>
             <div className="h-px w-12 bg-gold-DEFAULT/30" />
           </div>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-cream/90 mb-4">{t('title')}</h1>
-          <p className="text-cream/40 text-base max-w-md mx-auto">{t('subtitle')}</p>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-cream/90 mb-4 text-center">{t('subtitle')}</h1>
         </div>
       </div>
 
@@ -176,6 +234,7 @@ export default function MenuPage({ categories }: Props) {
                     ? 'text-gold-DEFAULT border-gold-DEFAULT'
                     : 'text-cream/50 border-transparent hover:text-cream/80 hover:border-gold/30'
                 )}
+                {...(/[\u0600-\u06FF]/.test(getCategoryName(cat)) && { lang: 'ar' })}
               >
                 {getCategoryName(cat)}
               </button>
@@ -193,24 +252,22 @@ export default function MenuPage({ categories }: Props) {
               key={category.id}
               id={category.id}
               ref={(el) => { sectionRefs.current[category.id] = el; }}
+              className="scroll-mt-[140px]"
             >
-              <div className="flex items-center gap-6 mb-8 justify-end">
-                <div className="flex-1 h-px bg-gradient-to-l from-gold/20 to-transparent" />
-                <div className="flex items-center gap-3">
-                  <h2 className="text-2xl sm:text-3xl font-black text-cream/90">{getCategoryName(category)}</h2>
+              <div className="mb-8 w-full" dir="ltr" style={{ textAlign: 'center' }}>
+                <div className="flex items-center justify-center gap-3">
                   <div className="w-2 h-2 bg-gold-DEFAULT rotate-45 flex-shrink-0" />
+                  <h2 className="text-2xl sm:text-3xl font-black text-cream/90" style={{ textAlign: 'center' }} {...(/[\u0600-\u06FF]/.test(getCategoryName(category)) && { lang: 'ar' })}>{getCategoryName(category)}</h2>
                 </div>
+                <div className="h-px mt-2 bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
               </div>
               {availableItems.length === 0 ? (
                 <p className="text-cream/25 text-sm text-right">{t('no_image')}</p>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                  {availableItems
-                    .sort((a, b) => a.sort_order - b.sort_order)
-                    .map((item) => (
-                      <MenuItemCard key={item.id} item={item} />
-                    ))}
-                </div>
+                <SectionedGrid
+                  items={availableItems}
+                  cols={['مشروبات', 'مشروبات مميزة', 'عصائر وشيك'].includes(category.name_ar) ? 3 : 2}
+                />
               )}
             </section>
           );

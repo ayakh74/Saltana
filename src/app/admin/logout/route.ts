@@ -3,5 +3,5 @@ import { clearAdminSession } from '@/lib/admin-auth';
 
 export async function POST() {
   await clearAdminSession();
-  redirect('/admin/login');
+  redirect('/portal');
 }

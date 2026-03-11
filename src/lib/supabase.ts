@@ -26,6 +26,7 @@ export type MenuItem = {
   price: number;
   image_url: string | null;
   tag: 'popular' | 'signature' | 'new' | null;
+  section: string | null;
   is_available: boolean;
   sort_order: number;
   created_at: string;

@@ -26,7 +26,7 @@ const experiences = [
       'أجواء رمضانية فريدة',
       'موائد فطور فاخرة',
       'مشروبات شرقية متنوعة',
-      'تزيين مميز بالفوانيس',
+      'أجواء عائلية ومائدة تجمع الجميع',
     ],
   },
   {
@@ -113,7 +113,7 @@ export default async function ExperiencesPage({
                 <ul className="space-y-2 text-right">
                   {details.map((d) => (
                     <li key={d} className="flex items-center gap-3 justify-end">
-                      <span className="text-cream/50 text-sm">{d}</span>
+                      <span className="text-cream/50 text-sm" lang="ar">{d}</span>
                       <div className="w-1 h-1 bg-gold-DEFAULT/50 rounded-full flex-shrink-0" />
                     </li>
                   ))}
@@ -132,13 +132,13 @@ export default async function ExperiencesPage({
           <div className="relative z-10">
             <div className="flex items-center justify-center gap-4 mb-4">
               <div className="h-px w-16 bg-gold-DEFAULT/30" />
-              <span className="section-label">للحجز</span>
+              <span className="section-label" lang="ar">للحجز</span>
               <div className="h-px w-16 bg-gold-DEFAULT/30" />
             </div>
-            <h2 className="text-3xl sm:text-4xl font-black text-cream/90 mb-4">
+            <h2 className="text-3xl sm:text-4xl font-black text-cream/90 mb-4" lang="ar">
               هل تخطط لمناسبة خاصة؟
             </h2>
-            <p className="text-cream/40 text-sm max-w-md mx-auto mb-10">
+            <p className="text-cream/40 text-sm max-w-md mx-auto mb-10" lang="ar">
               تواصل معنا مباشرة لتنظيم تجربتك الخاصة في سلطنة — كل لحظة معمولة بحب
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -146,7 +146,7 @@ export default async function ExperiencesPage({
                 href="/reservations"
                 className="btn-gold px-10 py-4 text-sm font-bold tracking-[0.2em] rounded-sm uppercase"
               >
-                احجز الآن
+                <span lang="ar">احجز الآن</span>
               </Link>
               <a
                 href={`tel:${tFooter('phone')}`}

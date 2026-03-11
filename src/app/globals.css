@@ -49,6 +49,11 @@
   ::-webkit-scrollbar-thumb:hover {
     background: #D4B483;
   }
+
+  /* Arabic text always uses Cairo, even when page locale is Hebrew/English */
+  [lang="ar"] {
+    font-family: var(--font-cairo), Cairo, sans-serif;
+  }
 }
 
 @layer components {

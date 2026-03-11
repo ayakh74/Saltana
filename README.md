@@ -21,17 +21,20 @@ npm install
 
 ### 2. Set up environment variables
 
-Copy `.env.example` to `.env.local` and fill in your Supabase credentials:
+Copy `.env.example` to `.env.local` and fill in your values:
 
 ```bash
 cp .env.example .env.local
 ```
 
-Edit `.env.local`:
-```
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
-```
+Edit `.env.local` with your Supabase credentials and secrets. **Never commit `.env.local` or any file containing real secrets** — they are gitignored.
+
+Required:
+- `NEXT_PUBLIC_SUPABASE_URL` — from Supabase project settings
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` — from Supabase project settings
+- `SUPABASE_SERVICE_ROLE_KEY` — for admin/seed operations (server-side only)
+- `ADMIN_PASSWORD` — for portal/admin login
+- `SEED_SECRET` — for one-time DB seeding (use a random string)
 
 ### 3. Set up Supabase database
 
@@ -70,7 +73,7 @@ git push -u origin main
 
 # Then in Vercel dashboard:
 # 1. Import GitHub repository
-# 2. Add environment variables (NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY)
+# 2. Add all env vars from .env.example (never commit real values)
 # 3. Deploy
 ```
 

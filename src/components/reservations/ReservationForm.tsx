@@ -1,23 +1,26 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { ChevronDown, Calendar, Clock, Users, CheckCircle, AlertCircle, Phone, User, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/lib/supabase';
 import { getWhatsAppLink } from '@/lib/utils';
 
+// 12:30 PM — 12:00 midnight (all week)
 const TIME_SLOTS = [
-  '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
-  '12:00', '12:30', '13:00', '13:30', '14:00', '14:30',
-  '15:00', '15:30', '16:00', '16:30', '17:00', '17:30',
-  '18:00', '18:30', '19:00', '19:15', '19:30', '19:45',
-  '20:00', '20:15', '20:30', '20:45', '21:00', '21:15',
-  '21:30', '21:45', '22:00', '22:15', '22:30', '22:45',
-  '23:00',
+  '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30',
+  '18:00', '18:30', '19:00', '19:15', '19:30', '19:45', '20:00', '20:15', '20:30', '20:45', '21:00', '21:15',
+  '21:30', '21:45', '22:00', '22:15', '22:30', '22:45', '23:00', '23:30',
 ];
 
 const PARTY_SIZES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+// "09:30" → "9:30", "14:00" → "14:00"
+const formatSlot = (slot: string) => slot.replace(/^0/, '');
+
+// How many concurrent reservations before a slot is considered "full"
+const MAX_PER_SLOT = 3;
 
 function WhatsAppIcon({ size = 16 }: { size?: number }) {
   return (
@@ -44,6 +47,46 @@ export default function ReservationForm() {
   const [partySizeOpen, setPartySizeOpen] = useState(false);
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [slotCounts, setSlotCounts] = useState<Record<string, number>>({});
+  const [now, setNow] = useState(() => new Date());
+
+  // Tick every minute so disabled slots update in real-time
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 60_000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Returns true if the slot time has already passed for today (+ 30 min buffer)
+  const isSlotPast = useCallback((slot: string): boolean => {
+    if (form.date !== today) return false;
+    const [h, m] = slot.split(':').map(Number);
+    const slotMinutes = h * 60 + m;
+    const nowMinutes = now.getHours() * 60 + now.getMinutes() + 30; // 30-min buffer
+    return slotMinutes <= nowMinutes;
+  }, [form.date, today, now]);
+
+  const fetchAvailability = useCallback(async (date: string) => {
+    try {
+      const res = await fetch(`/api/availability?date=${date}`);
+      if (res.ok) setSlotCounts(await res.json());
+    } catch { /* ignore — degrade gracefully */ }
+  }, []);
+
+  useEffect(() => { fetchAvailability(form.date); }, [form.date, fetchAvailability]);
+
+  // When date changes to today, auto-select the next available future slot
+  useEffect(() => {
+    if (form.date !== today) return;
+    const nowMinutes = now.getHours() * 60 + now.getMinutes() + 30;
+    const nextSlot = TIME_SLOTS.find((s) => {
+      const [h, m] = s.split(':').map(Number);
+      return h * 60 + m > nowMinutes;
+    });
+    if (nextSlot && isSlotPast(form.time)) {
+      setForm((f) => ({ ...f, time: nextSlot }));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.date, today]);
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -75,6 +118,7 @@ export default function ReservationForm() {
       ]);
       if (error) throw error;
       setStatus('success');
+      fetchAvailability(form.date);
     } catch {
       setStatus('error');
     }
@@ -82,7 +126,7 @@ export default function ReservationForm() {
 
   const whatsappLink = getWhatsAppLink(
     '0545268467',
-    `مرحباً، أود حجز طاولة لـ ${form.party_size} أشخاص بتاريخ ${form.date} الساعة ${form.time}`
+    `مرحباً، أود حجز طاولة لـ ${form.party_size} أشخاص بتاريخ ${form.date} الساعة ${formatSlot(form.time)}`
   );
 
   if (status === 'success') {
@@ -183,21 +227,54 @@ export default function ReservationForm() {
             </span>
           </label>
           <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-9 gap-2">
-            {TIME_SLOTS.map((slot) => (
-              <button
-                key={slot}
-                type="button"
-                onClick={() => setForm({ ...form, time: slot })}
-                className={cn(
-                  'py-2.5 text-xs font-mono font-medium border transition-all duration-200',
-                  form.time === slot
-                    ? 'time-slot-active font-bold'
-                    : 'border-gold/15 text-cream/50 hover:border-gold/35 hover:text-cream/80 bg-obsidian-200'
-                )}
-              >
-                {slot}
-              </button>
-            ))}
+            {TIME_SLOTS.map((slot) => {
+              const count = slotCounts[slot] ?? 0;
+              const isPast = isSlotPast(slot);
+              const isFull = !isPast && count >= MAX_PER_SLOT;
+              const isBusy = !isPast && count > 0 && count < MAX_PER_SLOT;
+              const isDisabled = isPast || isFull;
+              const isSelected = form.time === slot;
+              return (
+                <button
+                  key={slot}
+                  type="button"
+                  disabled={isDisabled}
+                  onClick={() => !isDisabled && setForm({ ...form, time: slot })}
+                  title={
+                    isPast ? 'هذا الوقت مضى' :
+                    isFull ? 'هذا الوقت محجوز بالكامل' :
+                    isBusy ? 'متاح — حجوزات محدودة' : undefined
+                  }
+                  className={cn(
+                    'relative py-2.5 text-xs font-mono font-medium border transition-all duration-200',
+                    isPast
+                      ? 'border-white/4 bg-white/2 text-cream/15 cursor-not-allowed'
+                      : isFull
+                        ? 'border-red-500/20 bg-red-500/5 text-red-400/30 cursor-not-allowed line-through'
+                        : isSelected
+                          ? 'time-slot-active font-bold'
+                          : isBusy
+                            ? 'border-amber-500/30 bg-amber-500/5 text-amber-300/70 hover:border-amber-400/50'
+                            : 'border-gold/15 text-cream/50 hover:border-gold/35 hover:text-cream/80 bg-obsidian-200'
+                  )}
+                >
+                  {formatSlot(slot)}
+                  {isBusy && !isSelected && (
+                    <span className="absolute top-0.5 right-0.5 w-1 h-1 rounded-full bg-amber-400/60" />
+                  )}
+                  {isFull && (
+                    <span className="absolute top-0.5 right-0.5 w-1 h-1 rounded-full bg-red-400/60" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Legend */}
+          <div className="flex items-center gap-5 mt-3 justify-end text-[10px] text-cream/30">
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-cream/20" /> <span lang="ar">متاح</span></span>
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-amber-400/60" /> <span lang="ar">حجوزات محدودة</span></span>
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-red-400/60" /> <span lang="ar">ممتلئ</span></span>
           </div>
         </div>
 
@@ -272,7 +349,7 @@ export default function ReservationForm() {
         <div className="glass-card p-4 flex flex-wrap items-center justify-end gap-4 text-sm">
           <span className="text-cream/30 text-xs">{t('select_time')}</span>
           <div className="flex items-center gap-3 text-cream/60 text-xs">
-            <span className="font-mono text-gold-DEFAULT">{form.time}</span>
+            <span className="font-mono text-gold-DEFAULT">{formatSlot(form.time)}</span>
             <span>·</span>
             <span>{form.date}</span>
             <span>·</span>

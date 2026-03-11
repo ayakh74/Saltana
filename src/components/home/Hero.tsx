@@ -151,7 +151,7 @@ export default function Hero() {
           className={`transition-all duration-1000 delay-500 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
         >
           <h1 className="text-6xl sm:text-7xl lg:text-9xl font-black mb-6 leading-none tracking-tight">
-            <span className="gold-text">سلطنة</span>
+            <span className="gold-text" lang="ar">سلطنة</span>
           </h1>
         </div>
 

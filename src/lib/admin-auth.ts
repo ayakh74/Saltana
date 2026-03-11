@@ -25,5 +25,5 @@ export async function clearAdminSession(): Promise<void> {
 }
 
 export function getAdminPassword(): string {
-  return process.env.ADMIN_PASSWORD ?? 'Saltana@Admin2026';
+  return process.env.ADMIN_PASSWORD ?? '';
 }

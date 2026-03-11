@@ -4,7 +4,7 @@ import AdminSidebar from '@/components/admin/AdminSidebar';
 
 export default async function AdminDashboardLayout({ children }: { children: React.ReactNode }) {
   const authed = await isAdminAuthenticated();
-  if (!authed) redirect('/admin/login');
+  if (!authed) redirect('/portal');
 
   return (
     <div className="flex min-h-screen bg-obsidian">

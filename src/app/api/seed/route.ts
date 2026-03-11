@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
 
-const SEED_SECRET = process.env.SEED_SECRET ?? 'saltana-seed-2026';
+const SEED_SECRET = process.env.SEED_SECRET ?? '';
 
 const categoriesData = [
   { name_ar: 'قائمة الافطار', name_he: 'ארוחת בוקר', name_en: 'Breakfast Menu', sort_order: 1 },

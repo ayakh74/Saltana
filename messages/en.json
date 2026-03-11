@@ -15,9 +15,8 @@
   },
   "about": {
     "label": "Our Story",
-    "title": "At Saltana, You're Always the Sultan",
-    "body": "Saltana was born from a deep passion for authentic food and the art of hospitality. Our menu features a wide range of appetizing starters and main dishes grilled over charcoal, all prepared with the finest ingredients and the highest culinary expertise. Our goal is to create a warm and intimate atmosphere that makes every guest feel at home.",
-    "open_hours": "9:00 AM — Midnight",
+    "body": "Our menu includes a wide variety of dishes, from delicious appetizers to main courses with Italian flavor, all prepared with the best ingredients and high expertise. Our goal is to create a warm and intimate atmosphere that makes every guest feel at home.",
+    "open_hours": "12:30 PM — Midnight",
     "days": "Every day of the week",
     "location": "Arraba, Galilee"
   },
@@ -86,13 +85,13 @@
     "follow": "Follow Us"
   },
   "footer": {
-    "tagline": "At Saltana… You're Always the Sultan",
+    "tagline": "A restaurant in the heart of Arraba",
     "contact_title": "Contact Us",
     "phone": "054-5268467",
     "location": "Arraba, Galilee",
     "waze": "Navigate with Waze",
     "hours_title": "Opening Hours",
-    "hours": "9:00 AM — 12:00 AM",
+    "hours": "12:30 PM — 12:00 AM",
     "days": "Daily",
     "social_title": "Follow Us",
     "rights": "All rights reserved",

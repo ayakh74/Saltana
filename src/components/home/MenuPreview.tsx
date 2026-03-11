@@ -3,7 +3,6 @@
 import { useInView } from 'react-intersection-observer';
 import { useTranslations, useLocale } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { ArrowLeft } from 'lucide-react';
 import type { MenuCategory } from '@/lib/supabase';
 
 type Props = { categories: MenuCategory[] };
@@ -30,18 +29,13 @@ export default function MenuPreview({ categories }: Props) {
   return (
     <section ref={ref} className="relative py-28 sm:py-36 bg-obsidian overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className={`mb-16 transition-all duration-1000 ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <div className="flex items-center gap-4 mb-4 justify-end">
+        <div className={`mb-16 transition-all duration-1000 text-center ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <div className="h-px w-12 bg-gold-DEFAULT/30" />
             <span className="section-label">{t('title')}</span>
             <div className="h-px w-12 bg-gold-DEFAULT/30" />
           </div>
-          <div className="flex items-end justify-between">
-            <Link href="/menu" className="inline-flex items-center gap-2 text-gold-DEFAULT text-sm hover:gap-3 transition-all duration-300 group">
-              <span className="tracking-wide">{tNav('menu')}</span>
-              <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform duration-300" />
-            </Link>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-cream/90 text-right">{t('subtitle')}</h2>
-          </div>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-cream/90 text-center">{t('subtitle')}</h2>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -56,7 +50,7 @@ export default function MenuPreview({ categories }: Props) {
                 <Link href="/menu" className="block glass-card group hover:border-gold/25 transition-all duration-500 overflow-hidden">
                   <div className="px-6 pt-6 pb-4 border-b border-gold/8 flex items-center justify-between">
                     <div className="w-1.5 h-1.5 bg-gold-DEFAULT rounded-full" />
-                    <h3 className="text-gold-DEFAULT font-bold text-lg">{getCategoryName(category)}</h3>
+                    <h3 className="text-gold-DEFAULT font-bold text-lg" {...(/[\u0600-\u06FF]/.test(getCategoryName(category)) && { lang: 'ar' })}>{getCategoryName(category)}</h3>
                   </div>
                   <div className="p-6 space-y-4">
                     {topItems.map((item) => (
@@ -65,8 +59,8 @@ export default function MenuPreview({ categories }: Props) {
                           <span className="text-gold-DEFAULT text-sm font-semibold">{item.price}<span className="text-gold-DEFAULT/70 text-xs">₪</span></span>
                         </div>
                         <div className="text-right flex-1 min-w-0">
-                          <p className="text-cream/80 text-sm font-medium truncate">{getItemName(item)}</p>
-                          {getItemDesc(item) && <p className="text-cream/35 text-xs mt-0.5 truncate">{getItemDesc(item)}</p>}
+                          <p className="text-cream/80 text-sm font-medium truncate" {...(/[\u0600-\u06FF]/.test(getItemName(item)) && { lang: 'ar' })}>{getItemName(item)}</p>
+                          {getItemDesc(item) && <p className="text-cream/35 text-xs mt-0.5 truncate" {...(/[\u0600-\u06FF]/.test(getItemDesc(item) || '') && { lang: 'ar' })}>{getItemDesc(item)}</p>}
                         </div>
                       </div>
                     ))}

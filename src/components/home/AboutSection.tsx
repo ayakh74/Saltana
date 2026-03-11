@@ -1,14 +1,12 @@
 'use client';
 
-import { useRef } from 'react';
+import Image from 'next/image';
 import { useInView } from 'react-intersection-observer';
 import { useTranslations } from 'next-intl';
-import { Link } from '@/i18n/navigation';
-import { Clock, MapPin, Star } from 'lucide-react';
+import { Clock, MapPin } from 'lucide-react';
 
 export default function AboutSection() {
   const t = useTranslations('about');
-  const tNav = useTranslations('nav');
 
   const { ref: sectionRef, inView } = useInView({ threshold: 0.1, triggerOnce: true });
 
@@ -41,18 +39,17 @@ export default function AboutSection() {
 
                 {/* Central logo mark */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-8 p-12">
-                  <div className="text-gold-DEFAULT/15">
-                    <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
-                      <circle cx="60" cy="60" r="58" stroke="currentColor" strokeWidth="0.5" />
-                      <circle cx="60" cy="60" r="48" stroke="currentColor" strokeWidth="0.3" />
-                      <path d="M60 10 L60 110 M10 60 L110 60" stroke="currentColor" strokeWidth="0.3" />
-                      <circle cx="60" cy="60" r="6" fill="currentColor" opacity="0.4" />
-                      <path d="M60 2 L63 14 L76 6 L70 18 L82 16 L74 26 L86 28 L76 36 L86 42 L74 44 L82 54 L70 50 L72 64 L62 58 L60 72 L58 58 L48 64 L50 50 L38 54 L46 44 L34 42 L44 36 L34 28 L46 26 L38 16 L50 18 L44 6 L57 14 Z" fill="currentColor" opacity="0.15" />
-                    </svg>
+                  <div className="relative w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0">
+                    <Image
+                      src="/logo.png"
+                      alt="سلطنة Saltana"
+                      fill
+                      className="object-contain drop-shadow-[0_0_20px_rgba(201,165,106,0.3)]"
+                    />
                   </div>
 
                   <div className="text-center">
-                    <p className="gold-text text-5xl font-black mb-2">سلطنة</p>
+                    <p className="gold-text text-5xl font-black mb-2" lang="ar">سلطنة</p>
                     <div className="ornament-line w-full my-3" />
                     <p className="text-cream/30 text-xs tracking-[0.25em] uppercase">
                       Since 2019 · Arraba, Galilee
@@ -63,30 +60,18 @@ export default function AboutSection() {
                   <div className="grid grid-cols-3 gap-4 w-full mt-4">
                     {[
                       { num: '5+', label: 'سنوات' },
-                      { num: '50+', label: 'طبقاً' },
-                      { num: '10K+', label: 'متابع' },
+                      { num: '100+', label: 'طبقاً' },
+                      { num: '30K+', label: 'متابع' },
                     ].map((stat) => (
                       <div key={stat.label} className="text-center border border-gold/10 py-3 px-2">
                         <p className="gold-text text-xl font-bold">{stat.num}</p>
-                        <p className="text-cream/30 text-[10px] mt-1 tracking-wide">{stat.label}</p>
+                        <p className="text-cream/30 text-[10px] mt-1 tracking-wide" lang="ar">{stat.label}</p>
                       </div>
                     ))}
                   </div>
                 </div>
               </div>
 
-              {/* Corner accent */}
-              <div className="absolute bottom-6 -left-6 glass-card p-4 border border-gold/20 shadow-2xl">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-gold-DEFAULT/10 flex items-center justify-center">
-                    <Star size={14} className="text-gold-DEFAULT" fill="#C9A56A" />
-                  </div>
-                  <div>
-                    <p className="text-cream/80 text-xs font-semibold">في سلطنة</p>
-                    <p className="text-cream/40 text-[10px]">دائماً أنت السلطان</p>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -95,18 +80,15 @@ export default function AboutSection() {
             className={`transition-all duration-1000 delay-200 ${inView ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-12'}`}
           >
             {/* Section label */}
-            <div className="flex items-center gap-4 mb-8 justify-end">
-              <div className="h-px flex-1 max-w-[60px] bg-gold-DEFAULT/30" />
-              <span className="section-label">{t('label')}</span>
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <div className="h-px w-12 bg-gold-DEFAULT/30" />
+              <span className="section-label text-xl">{t('label')}</span>
+              <div className="h-px w-12 bg-gold-DEFAULT/30" />
             </div>
-
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-right leading-tight mb-8">
-              <span className="gold-text">{t('title')}</span>
-            </h2>
 
             <div className="ornament-line w-full mb-8" />
 
-            <p className="text-cream/60 text-base sm:text-lg leading-loose text-right mb-12">
+            <p className="text-cream/60 text-base sm:text-lg leading-loose text-center sm:text-right mb-12">
               {t('body')}
             </p>
 
@@ -135,15 +117,6 @@ export default function AboutSection() {
                   <div key={text}>{content}</div>
                 );
               })}
-            </div>
-
-            <div className="flex justify-end">
-              <Link
-                href="/menu"
-                className="btn-gold px-7 py-3.5 text-sm font-bold tracking-widest rounded-sm uppercase"
-              >
-                {tNav('menu')}
-              </Link>
             </div>
           </div>
         </div>

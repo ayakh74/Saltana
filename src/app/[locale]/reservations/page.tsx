@@ -53,7 +53,7 @@ export default async function ReservationsPage({
             <span>/</span>
             <span className="text-gold-DEFAULT">Reservations</span>
             <span>/</span>
-            <span>لحجز</span>
+            <span lang="ar">لحجز</span>
           </div>
 
           <div className="flex items-center justify-center gap-4 mb-4">

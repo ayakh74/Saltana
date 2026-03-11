@@ -88,16 +88,11 @@ export default async function LocaleLayout({
 
   const dir = locale === 'he' || locale === 'ar' ? 'rtl' : 'ltr';
 
-  const fontClass =
-    locale === 'ar'
-      ? cairo.variable
-      : locale === 'he'
-      ? heebo.variable
-      : ubuntu.variable;
+  const fontFamily = locale === 'ar' ? 'font-cairo' : locale === 'he' ? 'font-heebo' : 'font-ubuntu';
 
   return (
     <html lang={locale} dir={dir} className={`${cairo.variable} ${ubuntu.variable} ${heebo.variable}`}>
-      <body className={`bg-obsidian text-cream font-cairo antialiased ${fontClass}`}>
+      <body className={`bg-obsidian text-cream ${fontFamily} antialiased`}>
         <NextIntlClientProvider messages={messages}>
           <Header locale={locale} />
           <main>{children}</main>

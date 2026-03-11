@@ -13,6 +13,7 @@ export default async function AdminLoginPage({
   const { error } = await searchParams;
   const authed = await isAdminAuthenticated();
   if (authed) redirect('/admin');
+  redirect('/portal');
 
   async function login(formData: FormData) {
     'use server';

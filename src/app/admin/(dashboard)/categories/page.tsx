@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getCategories, deleteCategory } from '@/lib/actions/categories';
-import { Plus, Pencil, Trash2, GripVertical, ToggleLeft, ToggleRight } from 'lucide-react';
+import { Plus, Pencil, GripVertical, ToggleLeft, ToggleRight } from 'lucide-react';
+import DeleteButton from '@/components/admin/DeleteButton';
 
 export const metadata = { title: 'Categories' };
 
@@ -72,18 +73,13 @@ export default async function CategoriesPage() {
                       >
                         <Pencil size={13} strokeWidth={1.5} />
                       </Link>
-                      <form action={async () => {
-                        'use server';
-                        await deleteCategory(cat.id);
-                      }}>
-                        <button
-                          type="submit"
-                          className="p-2 text-cream/40 hover:text-red-400 hover:bg-red-400/5 rounded-sm transition-all duration-200"
-                          onClick={(e) => { if (!confirm(`Delete "${cat.name_ar}"?`)) e.preventDefault(); }}
-                        >
-                          <Trash2 size={13} strokeWidth={1.5} />
-                        </button>
-                      </form>
+                      <DeleteButton
+                        action={async () => {
+                          'use server';
+                          await deleteCategory(cat.id);
+                        }}
+                        confirmMessage={`Delete "${cat.name_ar}"?`}
+                      />
                     </div>
                   </td>
                 </tr>
