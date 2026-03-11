@@ -1,0 +1,107 @@
+{
+  "nav": {
+    "home": "Home",
+    "menu": "Menu",
+    "reservations": "Reserve a Table",
+    "experiences": "Experiences",
+    "contact": "Contact"
+  },
+  "hero": {
+    "tagline": "Food for the Soul and Body",
+    "subtitle": "An extraordinary dining experience in the heart of Arraba",
+    "cta_reserve": "Reserve Your Table",
+    "cta_menu": "View Menu",
+    "scroll_hint": "Discover More"
+  },
+  "about": {
+    "label": "Our Story",
+    "title": "At Saltana, You're Always the Sultan",
+    "body": "Saltana was born from a deep passion for authentic food and the art of hospitality. Our menu features a wide range of appetizing starters and main dishes grilled over charcoal, all prepared with the finest ingredients and the highest culinary expertise. Our goal is to create a warm and intimate atmosphere that makes every guest feel at home.",
+    "open_hours": "9:00 AM — Midnight",
+    "days": "Every day of the week",
+    "location": "Arraba, Galilee"
+  },
+  "menu": {
+    "title": "Menu",
+    "subtitle": "Dishes prepared with care and professionalism",
+    "categories": {
+      "breakfast": "Breakfast Menu",
+      "mains": "Main Dishes",
+      "fish": "Fish",
+      "appetizers": "Appetizers",
+      "salads": "Salads",
+      "light": "Light Bites",
+      "italian": "Italian",
+      "extras": "Add-ons",
+      "drinks": "Drinks",
+      "juices": "Juices & Shakes",
+      "special_drinks": "Signature Drinks",
+      "desserts": "Desserts",
+      "hookah": "Hookah"
+    },
+    "price_unit": "₪",
+    "no_image": "Image coming soon",
+    "optional_note": "Image for reference only"
+  },
+  "reservations": {
+    "title": "Reserve",
+    "subtitle": "Provide your details and we'll find the best seats for you",
+    "party_size": "Party Size",
+    "date": "Date",
+    "time": "Time",
+    "name": "Full Name",
+    "phone": "Phone Number",
+    "notes": "Special Requests",
+    "notes_placeholder": "Special occasion? Any requests?",
+    "select_time": "Choose an available time slot:",
+    "guests_suffix": "Guests",
+    "guests_plus": "11+ Guests",
+    "book_now": "Book Now",
+    "booking_success": "Reservation confirmed! We'll be in touch soon.",
+    "booking_error": "Something went wrong. Please try again or contact us directly.",
+    "whatsapp_fallback": "Or reserve via WhatsApp",
+    "required_field": "This field is required",
+    "invalid_phone": "Invalid phone number"
+  },
+  "experiences": {
+    "title": "Experiences",
+    "subtitle": "Unforgettable moments at Saltana",
+    "ramadan": {
+      "title": "Ramadan Atmosphere",
+      "desc": "An extraordinary Iftar experience with lavish dishes and an atmosphere that takes you to another world"
+    },
+    "private": {
+      "title": "Private Events",
+      "desc": "Make your special occasion unforgettable — engagements, birthdays, or family gatherings"
+    },
+    "newyear": {
+      "title": "Special Evenings",
+      "desc": "Luxurious ambiance and sweet memories with a special live performance"
+    }
+  },
+  "instagram": {
+    "title": "Find Us on Instagram",
+    "subtitle": "Follow our latest posts and offers",
+    "handle": "@saltana.il",
+    "follow": "Follow Us"
+  },
+  "footer": {
+    "tagline": "At Saltana… You're Always the Sultan",
+    "contact_title": "Contact Us",
+    "phone": "054-5268467",
+    "location": "Arraba, Galilee",
+    "waze": "Navigate with Waze",
+    "hours_title": "Opening Hours",
+    "hours": "9:00 AM — 12:00 AM",
+    "days": "Daily",
+    "social_title": "Follow Us",
+    "rights": "All rights reserved",
+    "designed_by": "Designed with love"
+  },
+  "common": {
+    "loading": "Loading...",
+    "lang_ar": "عربي",
+    "lang_he": "עברית",
+    "lang_en": "English"
+  }
+}
