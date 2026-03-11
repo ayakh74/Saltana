@@ -1,36 +1,90 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
+// ── Types ────────────────────────────────────────────────────
+
+export type MenuCategory = {
+  id: string;
+  name_ar: string;
+  name_he: string | null;
+  name_en: string | null;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  menu_items?: MenuItem[];
+};
+
+export type MenuItem = {
+  id: string;
+  category_id: string;
+  name_ar: string;
+  name_he: string | null;
+  name_en: string | null;
+  desc_ar: string | null;
+  desc_he: string | null;
+  desc_en: string | null;
+  price: number;
+  image_url: string | null;
+  tag: 'popular' | 'signature' | 'new' | null;
+  is_available: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+};
+
 export type Reservation = {
-  id?: string;
+  id: string;
   name: string;
   phone: string;
   date: string;
   time: string;
   party_size: number;
-  notes?: string;
-  status?: 'pending' | 'confirmed' | 'cancelled';
-  created_at?: string;
+  notes: string | null;
+  status: 'pending' | 'confirmed' | 'cancelled';
+  created_at: string;
+  updated_at: string;
 };
 
-let _supabase: SupabaseClient | null = null;
+export type NewReservation = Omit<Reservation, 'id' | 'created_at' | 'updated_at' | 'status'> & { status?: Reservation['status'] };
+export type NewCategory = Omit<MenuCategory, 'id' | 'created_at' | 'updated_at' | 'menu_items'>;
+export type NewMenuItem = Omit<MenuItem, 'id' | 'created_at' | 'updated_at'>;
 
-export function getSupabase(): SupabaseClient {
-  if (_supabase) return _supabase;
+// ── Clients ──────────────────────────────────────────────────
 
+function createSupabaseClient(): SupabaseClient {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!url || !key || url === 'your_supabase_project_url') {
-    throw new Error('Supabase environment variables are not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in your .env.local file.');
+  if (!url || !key || url.includes('placeholder')) {
+    throw new Error('Supabase env vars not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.');
   }
-
-  _supabase = createClient(url, key);
-  return _supabase;
+  return createClient(url, key);
 }
 
-// Named export for convenience — will throw at runtime if env vars missing
-export const supabase = {
-  from: (table: string) => {
-    return getSupabase().from(table);
+function createSupabaseAdmin(): SupabaseClient {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key || url.includes('placeholder')) {
+    throw new Error('Supabase service role key not configured.');
+  }
+  return createClient(url, key, { auth: { autoRefreshToken: false, persistSession: false } });
+}
+
+let _client: SupabaseClient | null = null;
+let _admin: SupabaseClient | null = null;
+
+export function getSupabase(): SupabaseClient {
+  if (!_client) _client = createSupabaseClient();
+  return _client;
+}
+
+export function getSupabaseAdmin(): SupabaseClient {
+  if (!_admin) _admin = createSupabaseAdmin();
+  return _admin;
+}
+
+// Proxy for client-side use
+export const supabase = new Proxy({} as SupabaseClient, {
+  get(_target, prop) {
+    return (getSupabase() as unknown as Record<string | symbol, unknown>)[prop];
   },
-};
+});
