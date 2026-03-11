@@ -29,6 +29,7 @@ export default async function NewMenuItemPage() {
       price: Number(formData.get('price')),
       image_url: imageUrl,
       tag: (formData.get('tag') as 'popular' | 'signature' | 'new') || null,
+      section: (formData.get('section') as string) || null,
       is_available: formData.get('is_available') === 'true',
       sort_order: Number(formData.get('sort_order')) || 0,
     });

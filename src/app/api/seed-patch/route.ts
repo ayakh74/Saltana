@@ -117,6 +117,7 @@ export async function POST(req: Request) {
       desc_he: null,
       desc_en: null,
       tag: item.tag ?? null,
+      section: null,
     }));
 
     const { error: insErr, data: inserted } = await db.from('menu_items').insert(newItems).select();
@@ -134,7 +135,8 @@ export async function POST(req: Request) {
       image_url: null,
       desc_he: null,
       desc_en: null,
-      tag: item.tag ?? null,
+      tag: null,
+      section: null,
     }));
     const { error: mainsErr, data: mainsInserted } = await db.from('menu_items').insert(mainsToAdd).select();
     if (mainsErr) errors.push(`Mains insert failed: ${mainsErr.message}`);
