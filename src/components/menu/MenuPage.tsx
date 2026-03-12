@@ -245,7 +245,7 @@ export default function MenuPage({ categories }: Props) {
       </div>
 
       {/* Sticky Category Nav */}
-      <div className="sticky top-[60px] z-40 bg-obsidian/95 backdrop-blur-xl border-y border-gold/8">
+      <div className="sticky top-[76px] sm:top-[60px] z-40 bg-obsidian/95 backdrop-blur-xl border-y border-gold/8">
         <div ref={navRef} className="menu-scroll flex overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
           <div className="flex items-center px-4 gap-1 py-1 min-w-max mx-auto">
             {categories.map((cat) => (
