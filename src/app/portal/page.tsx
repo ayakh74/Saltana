@@ -142,10 +142,10 @@ export default function PortalPage() {
               />
             </div>
 
-            <h1 className="text-3xl font-bold tracking-wide text-gold-400 mb-1">
+            <h1 className="text-3xl font-bold tracking-wide text-gold-400 mb-1" lang="ar">
               سلطنة
             </h1>
-            <p className="text-xs tracking-[0.25em] uppercase text-gold-600/60 font-light">
+            <p className="text-xs tracking-[0.25em] uppercase text-gold-600/60 font-light" lang="ar">
               بوابة الإدارة
             </p>
 
@@ -160,7 +160,7 @@ export default function PortalPage() {
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <label className="block text-xs tracking-[0.2em] uppercase text-gold-600/70 text-right">
+              <label className="block text-xs tracking-[0.2em] uppercase text-gold-600/70 text-right" lang="ar">
                 كلمة المرور
               </label>
 
@@ -196,7 +196,7 @@ export default function PortalPage() {
               {/* Error */}
               {error && (
                 <p className="text-center text-xs text-red-400/80 pt-1 animate-fade-up">
-                  {error}
+                  <span lang="ar">{error}</span>
                 </p>
               )}
             </div>
@@ -215,10 +215,10 @@ export default function PortalPage() {
                 {loading ? (
                   <>
                     <Loader2 size={15} className="animate-spin" />
-                    <span>جاري التحقق...</span>
+                    <span lang="ar">جاري التحقق...</span>
                   </>
                 ) : (
-                  <span>دخول</span>
+                  <span lang="ar">دخول</span>
                 )}
               </span>
             </button>

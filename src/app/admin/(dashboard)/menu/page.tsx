@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { getMenuItems } from '@/lib/actions/menu-items';
 import { getCategories } from '@/lib/actions/categories';
 import { deleteMenuItem } from '@/lib/actions/menu-items';
+import DeleteButton from '@/components/admin/DeleteButton';
 import { Plus, Pencil, Trash2, ImageOff } from 'lucide-react';
 
 export const metadata = { title: 'Menu Items' };
@@ -52,7 +53,7 @@ export default async function MenuItemsPage({
             className={`px-3 py-1.5 text-xs font-medium rounded-sm border transition-all ${catFilter === c.id ? 'bg-gold/10 text-gold-DEFAULT border-gold/30' : 'border-gold/10 text-cream/40 hover:border-gold/25 hover:text-cream/60'}`}
             dir="rtl"
           >
-            {c.name_ar}
+            <span lang="ar">{c.name_ar}</span>
           </Link>
         ))}
       </div>
@@ -70,13 +71,13 @@ export default async function MenuItemsPage({
           {items.map((item) => (
             <div key={item.id} className="glass-card overflow-hidden group">
               {/* Image */}
-              <div className="relative aspect-video bg-obsidian-200 border-b border-gold/8">
+              <div className="relative aspect-video bg-obsidian-200 border-b border-gold/8 flex items-center justify-center">
                 {item.image_url ? (
                   <Image
                     src={item.image_url}
                     alt={item.name_ar}
                     fill
-                    className="object-cover"
+                    className="object-contain object-center bg-obsidian-200"
                   />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center">
@@ -88,11 +89,10 @@ export default async function MenuItemsPage({
                   <Link href={`/admin/menu/${item.id}`} className="p-2 bg-obsidian-50 border border-gold/30 text-gold-DEFAULT hover:bg-gold/10 rounded-sm transition-all">
                     <Pencil size={14} strokeWidth={1.5} />
                   </Link>
-                  <form action={async () => { 'use server'; await deleteMenuItem(item.id); }}>
-                    <button type="submit" className="p-2 bg-obsidian-50 border border-red-400/30 text-red-400 hover:bg-red-400/10 rounded-sm transition-all">
-                      <Trash2 size={14} strokeWidth={1.5} />
-                    </button>
-                  </form>
+                  <DeleteButton
+                    confirmMessage="Are you sure you want to delete this menu item? This action cannot be undone."
+                    action={async () => { 'use server'; await deleteMenuItem(item.id); }}
+                  />
                 </div>
                 {/* Tag */}
                 {item.tag && (
@@ -110,10 +110,14 @@ export default async function MenuItemsPage({
               <div className="p-4">
                 <div className="flex items-start justify-between gap-2 mb-1">
                   <span className="text-gold-DEFAULT font-bold">{item.price}₪</span>
-                  <h3 className="text-cream/90 text-sm font-semibold text-right" dir="rtl">{item.name_ar}</h3>
+                  <h3 className="text-cream/90 text-sm font-semibold text-right" dir="rtl">
+                    <span lang="ar">{item.name_ar}</span>
+                  </h3>
                 </div>
                 {item.desc_ar && (
-                  <p className="text-cream/35 text-xs text-right line-clamp-2" dir="rtl">{item.desc_ar}</p>
+                  <p className="text-cream/35 text-xs text-right line-clamp-2" dir="rtl">
+                    <span lang="ar">{item.desc_ar}</span>
+                  </p>
                 )}
               </div>
             </div>

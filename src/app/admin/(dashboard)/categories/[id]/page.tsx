@@ -30,7 +30,9 @@ export default async function EditCategoryPage({ params }: { params: Promise<{ i
         </Link>
         <div>
           <h1 className="text-2xl font-bold text-cream/90">Edit Category</h1>
-          <p className="text-cream/40 text-sm mt-0.5" dir="rtl">{cat.name_ar}</p>
+          <p className="text-cream/40 text-sm mt-0.5" dir="rtl">
+            <span lang="ar">{cat.name_ar}</span>
+          </p>
         </div>
       </div>
 

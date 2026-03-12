@@ -43,13 +43,13 @@ function MenuItemCard({ item }: { item: MenuItem }) {
         inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
       )}
     >
-      <div className="relative aspect-[16/9] overflow-hidden bg-obsidian-200 border-b border-gold/8">
+      <div className="relative aspect-[16/9] overflow-hidden bg-obsidian-200 border-b border-gold/8 flex items-center justify-center">
         {item.image_url && !imgError ? (
           <Image
             src={item.image_url}
             alt={name}
             fill
-            className="object-cover transition-transform duration-700 group-hover:scale-105"
+            className="object-contain object-center bg-obsidian-200 transition-transform duration-700"
             onError={() => setImgError(true)}
           />
         ) : (
@@ -266,7 +266,7 @@ export default function MenuPage({ categories }: Props) {
               ) : (
                 <SectionedGrid
                   items={availableItems}
-                  cols={['مشروبات', 'مشروبات مميزة', 'عصائر وشيك'].includes(category.name_ar) ? 3 : 2}
+                  cols={2}
                 />
               )}
             </section>

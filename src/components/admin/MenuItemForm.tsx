@@ -38,7 +38,12 @@ export default function MenuItemForm({ categories, item, onSubmit }: Props) {
       if (imageFile) formData.set('image_file', imageFile);
       if (item?.image_url && !imageFile) formData.set('existing_image_url', item.image_url);
       await onSubmit(formData);
-      router.push('/admin/menu');
+      const categoryId = formData.get('category_id') as string | null;
+      if (categoryId) {
+        router.push(`/admin/menu?cat=${categoryId}`);
+      } else {
+        router.push('/admin/menu');
+      }
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');
@@ -56,12 +61,12 @@ export default function MenuItemForm({ categories, item, onSubmit }: Props) {
             Dish Image <span className="text-cream/25">(optional)</span>
           </label>
           <div
-            className="relative aspect-square bg-obsidian-200 border-2 border-dashed border-gold/20 hover:border-gold/40 transition-colors cursor-pointer overflow-hidden rounded-sm group"
+            className="relative aspect-square bg-obsidian-200 border-2 border-dashed border-gold/20 hover:border-gold/40 transition-colors cursor-pointer overflow-hidden rounded-sm group flex items-center justify-center"
             onClick={() => fileRef.current?.click()}
           >
             {imagePreview ? (
               <>
-                <Image src={imagePreview} alt="Preview" fill className="object-cover" />
+                <Image src={imagePreview} alt="Preview" fill className="object-contain object-center bg-obsidian-200" />
                 <div className="absolute inset-0 bg-obsidian/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <Upload size={20} className="text-gold-DEFAULT" strokeWidth={1.5} />
                 </div>

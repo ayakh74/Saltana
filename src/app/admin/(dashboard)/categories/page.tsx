@@ -49,9 +49,13 @@ export default async function CategoriesPage() {
                     <GripVertical size={14} />
                   </td>
                   <td className="p-4">
-                    <span className="text-cream/90 font-medium" dir="rtl">{cat.name_ar}</span>
+                    <span className="text-cream/90 font-medium" dir="rtl">
+                      <span lang="ar">{cat.name_ar}</span>
+                    </span>
                   </td>
-                  <td className="p-4 text-cream/50" dir="rtl">{cat.name_he ?? '—'}</td>
+                  <td className="p-4 text-cream/50" dir="rtl">
+                    {cat.name_he ?? '—'}
+                  </td>
                   <td className="p-4 text-cream/50">{cat.name_en ?? '—'}</td>
                   <td className="p-4 text-cream/40 font-mono">{cat.sort_order}</td>
                   <td className="p-4">

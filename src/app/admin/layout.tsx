@@ -1,6 +1,13 @@
 import type { Metadata } from 'next';
-import { Ubuntu } from 'next/font/google';
+import { Cairo, Ubuntu } from 'next/font/google';
 import '../globals.css';
+
+const cairo = Cairo({
+  subsets: ['arabic', 'latin'],
+  weight: ['300', '400', '500', '600', '700', '900'],
+  variable: '--font-cairo',
+  display: 'swap',
+});
 
 const ubuntu = Ubuntu({
   subsets: ['latin'],
@@ -16,8 +23,8 @@ export const metadata: Metadata = {
 
 export default function AdminRootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" dir="ltr">
-      <body className={`${ubuntu.variable} font-ubuntu bg-obsidian text-cream antialiased`}>
+    <html lang="en" dir="ltr" className={`${cairo.variable} ${ubuntu.variable}`}>
+      <body className="font-ubuntu bg-obsidian text-cream antialiased">
         {children}
       </body>
     </html>

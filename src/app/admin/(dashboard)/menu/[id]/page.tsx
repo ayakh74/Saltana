@@ -58,7 +58,9 @@ export default async function EditMenuItemPage({ params }: { params: Promise<{ i
         </Link>
         <div>
           <h1 className="text-2xl font-bold text-cream/90">Edit Menu Item</h1>
-          <p className="text-cream/40 text-sm mt-0.5" dir="rtl">{item.name_ar}</p>
+          <p className="text-cream/40 text-sm mt-0.5" dir="rtl">
+            <span lang="ar">{item.name_ar}</span>
+          </p>
         </div>
       </div>
       <div className="glass-card p-6">
