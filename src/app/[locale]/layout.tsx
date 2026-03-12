@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Cairo, Ubuntu, Heebo } from 'next/font/google';
-import { Analytics } from '@vercel/analytics/react';
+import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
