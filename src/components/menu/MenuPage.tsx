@@ -231,7 +231,7 @@ export default function MenuPage({ categories }: Props) {
   return (
     <div className="min-h-screen bg-obsidian pt-24">
       {/* Page Header — section label only (no duplicate title), centered on mobile */}
-      <div className="relative py-16 sm:py-20 overflow-hidden">
+      <div className="relative pt-16 pb-24 sm:pt-20 sm:pb-28 overflow-hidden">
         <div className="absolute inset-0 pointer-events-none"
           style={{ background: 'radial-gradient(ellipse at center top, rgba(201,165,106,0.06) 0%, transparent 60%)' }} />
         <div className="relative z-10 max-w-7xl mx-auto px-4 text-center">
