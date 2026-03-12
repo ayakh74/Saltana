@@ -24,7 +24,7 @@ function TagBadge({ tag }: { tag: MenuItem['tag'] }) {
   );
 }
 
-function MenuItemCard({ item }: { item: MenuItem }) {
+function MenuItemCard({ item, onClick }: { item: MenuItem; onClick?: () => void }) {
   const t = useTranslations('menu');
   const locale = useLocale();
   const [imgError, setImgError] = useState(false);
@@ -39,9 +39,19 @@ function MenuItemCard({ item }: { item: MenuItem }) {
     <div
       ref={ref}
       className={cn(
-        'glass-card glass-card-hover group transition-all duration-700',
+        'glass-card glass-card-hover group transition-all duration-700 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/60',
         inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
       )}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : -1}
+      onClick={onClick}
+      onKeyDown={(e) => {
+        if (!onClick) return;
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick();
+        }
+      }}
     >
       <div className="relative aspect-[16/9] overflow-hidden bg-obsidian-200 border-b border-gold/8 flex items-center justify-center">
         {item.image_url && !imgError ? (
@@ -86,7 +96,15 @@ function MenuItemCard({ item }: { item: MenuItem }) {
   );
 }
 
-function SectionedGrid({ items, cols = 2 }: { items: MenuItem[]; cols?: 2 | 3 }) {
+function SectionedGrid({
+  items,
+  cols = 2,
+  onItemClick,
+}: {
+  items: MenuItem[];
+  cols?: 2 | 3;
+  onItemClick?: (item: MenuItem) => void;
+}) {
   const locale = useLocale();
   const sorted = [...items].sort((a, b) => a.sort_order - b.sort_order);
 
@@ -127,12 +145,18 @@ function SectionedGrid({ items, cols = 2 }: { items: MenuItem[]; cols?: 2 | 3 })
               <div className="h-px flex-1 bg-gradient-to-l from-gold/15 to-transparent hidden sm:block" />
             </div>
           )}
-          <div className={cn(
-            'grid gap-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4',
-            cols === 3 ? 'grid-cols-3' : 'grid-cols-2'
-          )}>
+          <div
+            className={cn(
+              'grid gap-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4',
+              cols === 3 ? 'grid-cols-3' : 'grid-cols-2'
+            )}
+          >
             {group.items.map((item) => (
-              <MenuItemCard key={item.id} item={item} />
+              <MenuItemCard
+                key={item.id}
+                item={item}
+                onClick={onItemClick ? () => onItemClick(item) : undefined}
+              />
             ))}
           </div>
         </div>
@@ -147,6 +171,7 @@ export default function MenuPage({ categories }: Props) {
   const t = useTranslations('menu');
   const locale = useLocale();
   const [activeCategory, setActiveCategory] = useState(categories[0]?.id ?? '');
+  const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const navRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
 
@@ -267,12 +292,106 @@ export default function MenuPage({ categories }: Props) {
                 <SectionedGrid
                   items={availableItems}
                   cols={2}
+                  onItemClick={(item) => setSelectedItem(item)}
                 />
               )}
             </section>
           );
         })}
       </div>
+
+      {/* Item Details Dialog */}
+      {selectedItem && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4"
+          onClick={() => setSelectedItem(null)}
+        >
+          <div
+            className="relative max-w-lg w-full max-h-[80vh] overflow-y-auto glass-card border border-gold/20"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="absolute top-3 left-3 text-cream/60 hover:text-cream/90 text-sm"
+              onClick={() => setSelectedItem(null)}
+            >
+              ✕
+            </button>
+            <div className="relative aspect-[16/9] bg-obsidian-200 border-b border-gold/10 flex items-center justify-center">
+              {selectedItem.image_url ? (
+                <Image
+                  src={selectedItem.image_url}
+                  alt={selectedItem.name_ar}
+                  fill
+                  className="object-contain object-center bg-obsidian-200"
+                />
+              ) : (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-cream/25">
+                  <ImageOff size={24} strokeWidth={1} className="text-gold-DEFAULT" />
+                  <span className="text-[10px] tracking-widest uppercase">{t('no_image')}</span>
+                </div>
+              )}
+            </div>
+            <div className="p-5 space-y-3">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-shrink-0 text-left">
+                  <span className="text-gold-DEFAULT font-bold text-xl">{selectedItem.price}</span>
+                  <span className="text-gold-DEFAULT/60 text-sm ml-0.5">₪</span>
+                </div>
+                <div className="text-right flex-1 min-w-0">
+                  {(() => {
+                    const name =
+                      locale === 'he'
+                        ? selectedItem.name_he || selectedItem.name_ar
+                        : locale === 'en'
+                        ? selectedItem.name_en || selectedItem.name_ar
+                        : selectedItem.name_ar;
+                    const nameIsArabic =
+                      locale === 'ar' ||
+                      (locale === 'he' && !selectedItem.name_he) ||
+                      (locale === 'en' && !selectedItem.name_en);
+                    return (
+                      <h2 className="text-cream/95 font-semibold text-lg leading-snug">
+                        {nameIsArabic ? <span lang="ar">{name}</span> : name}
+                      </h2>
+                    );
+                  })()}
+                  {locale === 'ar' && selectedItem.name_he && (
+                    <p className="text-cream/30 text-xs mt-0.5 font-heebo" dir="rtl">
+                      {selectedItem.name_he}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {selectedItem.desc_ar || selectedItem.desc_he || selectedItem.desc_en ? (
+                <div className="pt-2 text-sm leading-relaxed text-cream/80 text-right space-y-2">
+                  {(() => {
+                    const desc =
+                      locale === 'he'
+                        ? selectedItem.desc_he || selectedItem.desc_ar
+                        : locale === 'en'
+                        ? selectedItem.desc_en || selectedItem.desc_ar
+                        : selectedItem.desc_ar;
+                    const descIsArabic =
+                      locale === 'ar' ||
+                      (locale === 'he' && !selectedItem.desc_he) ||
+                      (locale === 'en' && !selectedItem.desc_en);
+                    return desc ? (descIsArabic ? <p lang="ar">{desc}</p> : <p>{desc}</p>) : null;
+                  })()}
+                </div>
+              ) : null}
+
+              {selectedItem.section && (
+                <p className="text-xs text-gold-DEFAULT/70 text-right mt-2">
+                  <span className="uppercase tracking-[0.2em] text-gold-DEFAULT/60">{t('section')}</span>{' '}
+                  <span lang="ar">{selectedItem.section}</span>
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
