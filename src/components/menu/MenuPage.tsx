@@ -382,12 +382,6 @@ export default function MenuPage({ categories }: Props) {
                 </div>
               ) : null}
 
-              {selectedItem.section && (
-                <p className="text-xs text-gold-DEFAULT/70 text-right mt-2">
-                  <span className="uppercase tracking-[0.2em] text-gold-DEFAULT/60">{t('section')}</span>{' '}
-                  <span lang="ar">{selectedItem.section}</span>
-                </p>
-              )}
             </div>
           </div>
         </div>
